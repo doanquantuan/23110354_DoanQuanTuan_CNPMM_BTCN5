@@ -55,9 +55,7 @@ const ShopPage = () => {
 
   // Sync category from URL search params
   useEffect(() => {
-    if (urlCategory) {
-      setSelectedCategory(urlCategory);
-    }
+    setSelectedCategory(urlCategory || "Tất Cả");
   }, [urlCategory]);
 
   // Sync filter flags from URL search params
@@ -211,7 +209,13 @@ const ShopPage = () => {
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              onClick={() => {
+                const newParams = {};
+                if (searchWord) newParams.search = searchWord;
+                if (cat !== "Tất Cả") newParams.category = cat;
+                if (urlFilter) newParams.filter = urlFilter;
+                setSearchParams(newParams);
+              }}
               className={`pb-4 text-xs font-bold uppercase tracking-widest transition-all duration-200 relative ${
                 selectedCategory === cat
                   ? "text-bakery-primary font-extrabold"

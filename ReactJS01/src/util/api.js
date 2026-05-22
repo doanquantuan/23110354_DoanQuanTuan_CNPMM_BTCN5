@@ -77,14 +77,14 @@ const getProductByIdApi = (id) => {
   return axios.get(URL_API);
 };
 
-const getBestSellersApi = () => {
+const getBestSellersApi = (params = {}) => {
   const URL_API = "/v1/api/products/best-seller";
-  return axios.get(URL_API);
+  return axios.get(URL_API, { params });
 };
 
-const getMostViewedApi = () => {
+const getMostViewedApi = (params = {}) => {
   const URL_API = "/v1/api/products/most-viewed";
-  return axios.get(URL_API);
+  return axios.get(URL_API, { params });
 };
 
 export {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import HeroBanner from "../components/ui/HeroBanner";
 import ProductCard from "../components/ui/ProductCard";
-import ProductSlider from "../components/ui/ProductSlider";
+import PaginatedHorizontalSlider from "../components/ui/PaginatedHorizontalSlider";
 import { getProductsApi, getBestSellersApi, getMostViewedApi } from "../util/api";
 import { Sparkles, Clock, Award, Coffee, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -23,13 +23,9 @@ const ProductSkeletonGrid = () => (
 
 const HomePage = () => {
   const [newProducts, setNewProducts] = useState([]);
-  const [bestSellers, setBestSellers] = useState([]);
-  const [mostViewed, setMostViewed] = useState([]);
   const [promoProducts, setPromoProducts] = useState([]);
 
   const [loadingNew, setLoadingNew] = useState(true);
-  const [loadingBestSellers, setLoadingBestSellers] = useState(true);
-  const [loadingMostViewed, setLoadingMostViewed] = useState(true);
   const [loadingPromo, setLoadingPromo] = useState(true);
 
   // 1. Fetch Bánh mới ra lò (Top 4)
@@ -49,42 +45,6 @@ const HomePage = () => {
       }
     };
     fetchNewProducts();
-  }, []);
-
-  // 2. Fetch Top 10 Bán chạy nhất
-  useEffect(() => {
-    const fetchBestSellers = async () => {
-      try {
-        const res = await getBestSellersApi();
-        if (res) {
-          const data = Array.isArray(res) ? res : (res.data || []);
-          setBestSellers(data.slice(0, 10));
-        }
-      } catch (err) {
-        console.error("Lỗi tải sản phẩm bán chạy:", err);
-      } finally {
-        setLoadingBestSellers(false);
-      }
-    };
-    fetchBestSellers();
-  }, []);
-
-  // 3. Fetch Top 10 Xem nhiều nhất
-  useEffect(() => {
-    const fetchMostViewed = async () => {
-      try {
-        const res = await getMostViewedApi();
-        if (res) {
-          const data = Array.isArray(res) ? res : (res.data || []);
-          setMostViewed(data.slice(0, 10));
-        }
-      } catch (err) {
-        console.error("Lỗi tải sản phẩm xem nhiều:", err);
-      } finally {
-        setLoadingMostViewed(false);
-      }
-    };
-    fetchMostViewed();
   }, []);
 
   // 4. Fetch Khuyến mãi (Top 4)
@@ -289,11 +249,7 @@ const HomePage = () => {
           </Link>
         </div>
 
-        {loadingBestSellers ? (
-          <ProductSkeletonGrid />
-        ) : (
-          <ProductSlider products={bestSellers} autoplay={true} />
-        )}
+        <PaginatedHorizontalSlider fetchDataApi={getBestSellersApi} />
       </section>
 
       {/* 6. Section: Top 10 Xem nhiều nhất */}
@@ -309,11 +265,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        {loadingMostViewed ? (
-          <ProductSkeletonGrid />
-        ) : (
-          <ProductSlider products={mostViewed} autoplay={false} />
-        )}
+        <PaginatedHorizontalSlider fetchDataApi={getMostViewedApi} />
       </section>
 
       {/* 7. Section: Khuyến mãi giới hạn thời gian (Countdown Sale) */}

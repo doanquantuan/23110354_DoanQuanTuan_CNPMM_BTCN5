@@ -267,6 +267,23 @@ const getBestSellers = async (req, res) => {
       .sort((a, b) => b.soldCount - a.soldCount)
       .slice(0, 10);
 
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+
+    if (!isNaN(page) && !isNaN(limit)) {
+      const offset = (page - 1) * limit;
+      const paginatedProducts = bestSellers.slice(offset, offset + limit);
+
+      return res.status(200).json({
+        success: true,
+        products: paginatedProducts,
+        page,
+        limit,
+        total: bestSellers.length,
+        totalPages: Math.ceil(bestSellers.length / limit),
+      });
+    }
+
     return res.status(200).json(bestSellers);
   } catch (error) {
     console.error(">>> Error in getBestSellers:", error);
@@ -291,6 +308,23 @@ const getMostViewed = async (req, res) => {
     const mostViewed = formattedProducts
       .sort((a, b) => b.views - a.views)
       .slice(0, 10);
+
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+
+    if (!isNaN(page) && !isNaN(limit)) {
+      const offset = (page - 1) * limit;
+      const paginatedProducts = mostViewed.slice(offset, offset + limit);
+
+      return res.status(200).json({
+        success: true,
+        products: paginatedProducts,
+        page,
+        limit,
+        total: mostViewed.length,
+        totalPages: Math.ceil(mostViewed.length / limit),
+      });
+    }
 
     return res.status(200).json(mostViewed);
   } catch (error) {
